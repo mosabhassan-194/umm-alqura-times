@@ -20,7 +20,7 @@ def fetch_jazan_times():
 
     if not table:
     print("DEBUG: Table not found — here’s a preview:")
-    print(response.text[:1000])  # أطبع أول 1000 حرف
+    print(response.text[:1000])  # أطبع أول 1000 حرف من الصفحة
     return {"error": "Prayer time table not found"}
 
     rows = table.find_all("tr")
