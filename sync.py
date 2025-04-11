@@ -11,20 +11,20 @@ REPO_NAME = "mosabhassan-194/umm-alqura-times"
 FILE_PATH = "jazan.json"
 
 def fetch_jazan_times():
-    url = "https://www.ummulqura.org.sa/Default.aspx"
-    response = requests.get(url, verify=False)
-    soup = BeautifulSoup(response.text, 'html.parser')
+url = "https://www.ummulqura.org.sa/Default.aspx"
+response = requests.get(url, verify=False)
+soup = BeautifulSoup(response.text, 'html.parser')
 
-    today = datetime.datetime.now().strftime("%Y-%m-%d")
-    table = soup.find("table", {"id": "ContentPlaceHolder1_GridView1"})
+today = datetime.datetime.now().strftime("%Y-%m-%d")
+table = soup.find("table", {"id": "ContentPlaceHolder1_GridView1"})
 
-    if not table:
-    print("DEBUG: Table not found — here’s a preview:")
-    print(response.text[:1000])  # أطبع أول 1000 حرف من الصفحة
-    return {"error": "Prayer time table not found"}
+if not table:
+print("DEBUG: Table not found — here’s a preview:")
+print(response.text[:1000])  # أطبع أول 1000 حرف من الصفحة
+return {"error": "Prayer time table not found"}
 
-    rows = table.find_all("tr")
-    for row in rows:
+rows = table.find_all("tr")
+for row in rows:
         cols = row.find_all("td")
         cols = [td.text.strip() for td in cols]
         if len(cols) >= 7 and ("جازان" in cols[0] or "Jazan" in cols[0]):
