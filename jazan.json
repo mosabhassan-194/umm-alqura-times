@@ -1,8 +1,3 @@
 {
-  "fajr": "04:41",
-  "dhuhr": "12:11",
-  "asr": "03:29",
-  "maghrib": "06:25",
-  "isha": "07:55",
-  "date": "2025-04-11"
+  "error": "Prayer time table not found"
 }
