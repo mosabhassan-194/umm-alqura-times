@@ -19,7 +19,9 @@ def fetch_jazan_times():
     table = soup.find("table", {"id": "ContentPlaceHolder1_GridView1"})
 
     if not table:
-        return {"error": "Prayer time table not found"}
+    print("DEBUG: Table not found — here’s a preview:")
+    print(response.text[:1000])  # أطبع أول 1000 حرف
+    return {"error": "Prayer time table not found"}
 
     rows = table.find_all("tr")
     for row in rows:
