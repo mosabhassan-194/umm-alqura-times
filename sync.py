@@ -6,7 +6,7 @@ import json
 import os
 
 # GitHub credentials
-GITHUB_TOKEN = "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"
+GITHUB_TOKEN = "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"
 REPO_NAME = "mosabhassan-194/umm-alqura-times"
 FILE_PATH = "jazan.json"
 
