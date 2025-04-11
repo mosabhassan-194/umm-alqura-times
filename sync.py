@@ -5,8 +5,8 @@ import datetime
 import json
 import os
 
-# GitHub credentials
-GITHUB_TOKEN = "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"
+# ✅ GitHub credentials from secrets
+GITHUB_TOKEN = os.getenv("GH_TOKEN")  # from GitHub Actions Secrets
 REPO_NAME = "mosabhassan-194/umm-alqura-times"
 FILE_PATH = "jazan.json"
 
@@ -15,7 +15,7 @@ def fetch_jazan_times():
     response = requests.get(url, verify=False)
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    today = datetime.datetime.now().strftime("%d-%m-%Y")
+    today = datetime.datetime.now().strftime("%Y-%m-%d")
     table = soup.find("table", {"id": "ContentPlaceHolder1_GridView1"})
 
     if not table:
@@ -38,15 +38,18 @@ def fetch_jazan_times():
     return {"error": "Jazan not found"}
 
 def upload_to_github(data):
+    if not GITHUB_TOKEN:
+        print("❌ Missing GitHub token. Set GH_TOKEN in Actions Secrets.")
+        return
     g = Github(GITHUB_TOKEN)
     repo = g.get_repo(REPO_NAME)
 
     try:
         contents = repo.get_contents(FILE_PATH, ref="main")
         repo.update_file(FILE_PATH, "update jazan.json", json.dumps(data, ensure_ascii=False, indent=2), contents.sha, branch="main")
-        print("Updated existing file.")
+        print("✅ Updated existing file.")
     except Exception as e:
-        print("File not found. Creating new file.")
+        print("⚠️ File not found. Creating new one.")
         repo.create_file(FILE_PATH, "create jazan.json", json.dumps(data, ensure_ascii=False, indent=2), branch="main")
 
 upload_to_github(fetch_jazan_times())
