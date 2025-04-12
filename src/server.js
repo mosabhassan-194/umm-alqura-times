@@ -1,9 +1,10 @@
 const express = require("express");
 const { exec } = require("child_process");
 const fs = require("fs");
+const path = require("path");
 const app = express();
 
-const prayerTimes = require("./jazan.json");
+let prayerTimes = require("./jazan.json");
 
 app.get("/", (req, res) => {
   res.send("Athan Clock Server is running");
@@ -20,6 +21,12 @@ app.get("/sync", (req, res) => {
       res.status(500).send("Sync failed:\n" + stderr);
     } else {
       console.log("Sync success:", stdout);
+      try {
+        const updated = JSON.parse(fs.readFileSync(path.join(__dirname, "jazan.json"), "utf8"));
+        prayerTimes = updated;
+      } catch (e) {
+        console.error("Failed to reload JSON:", e);
+      }
       res.send("Sync complete:\n" + stdout);
     }
   });
