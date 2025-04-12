@@ -1,25 +1,30 @@
 const express = require("express");
-const fs = require("fs");
+const { exec } = require("child_process");
 const app = express();
+const fs = require("fs");
+const prayerTimes = require("./jazan.json");
 
-// Root route
 app.get("/", (req, res) => {
-  res.send("Umm Al-Qura API is live!");
+  res.send("Athan Clock Server is running!");
 });
 
-// /jazantimes route
 app.get("/jazantimes", (req, res) => {
-  fs.readFile("jazan.json", "utf8", (err, data) => {
-    if (err) {
-      console.error("Failed to read jazan.json", err);
-      return res.status(500).json({ error: "Internal server error" });
+  res.json(prayerTimes);
+});
+
+app.get("/sync", (req, res) => {
+  exec("python3 sync.py", (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error: ${stderr}`);
+      res.status(500).send(`Sync failed:\n${stderr}`);
+    } else {
+      console.log(`Output: ${stdout}`);
+      res.send(`Sync complete:\n${stdout}`);
     }
-    res.header("Content-Type", "application/json");
-    res.send(data);
   });
 });
 
-// Start server
-app.listen(process.env.PORT || 3000, () => {
-  console.log("Server is running...");
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log("Server is running on port", port);
 });
