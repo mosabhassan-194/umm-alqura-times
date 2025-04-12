@@ -34,7 +34,8 @@ def fetch_jazan_times():
                 "asr": cols[4],
                 "maghrib": cols[5],
                 "isha": cols[6],
-                "date": today
+                "date": today,
+                "fetched_at": datetime.datetime.now().isoformat()  # <== Always changes
             }
 
     return {"error": "Jazan not found"}
@@ -49,10 +50,21 @@ def upload_to_github(data):
 
     try:
         contents = repo.get_contents(FILE_PATH, ref="main")
-        repo.update_file(FILE_PATH, "update jazan.json", json.dumps(data, ensure_ascii=False, indent=2), contents.sha, branch="main")
+        repo.update_file(
+            FILE_PATH,
+            f"update jazan.json on {datetime.datetime.now().isoformat()}",
+            json.dumps(data, ensure_ascii=False, indent=2),
+            contents.sha,
+            branch="main"
+        )
         print("✅ Updated existing file.")
     except Exception as e:
-        print("File not found. Creating new file.")
-        repo.create_file(FILE_PATH, "create jazan.json", json.dumps(data, ensure_ascii=False, indent=2), branch="main")
+        print("⚠️ File not found. Creating new file.")
+        repo.create_file(
+            FILE_PATH,
+            f"create jazan.json on {datetime.datetime.now().isoformat()}",
+            json.dumps(data, ensure_ascii=False, indent=2),
+            branch="main"
+        )
 
 upload_to_github(fetch_jazan_times())
