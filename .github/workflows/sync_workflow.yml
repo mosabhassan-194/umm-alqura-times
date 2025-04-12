@@ -18,6 +18,12 @@ jobs:
         with:
           python-version: 3.11
 
+      - name: Install Chromium
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+          echo "CHROME_BIN=$(which chromium-browser)" >> $GITHUB_ENV
+
       - name: Install dependencies
         run: pip install requests beautifulsoup4 selenium PyGithub
 
