@@ -22,7 +22,7 @@ jobs:
         run: pip install requests beautifulsoup4 PyGithub
 
       - name: Run sync script
-        run: python sync.py
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           REPO_NAME: ${{ secrets.REPO_NAME }}
+        run: python sync.py
