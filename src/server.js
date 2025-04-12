@@ -1,3 +1,11 @@
+const express = require("express");
+const { exec } = require("child_process");
+const app = express();
+
+app.get("/", (req, res) => {
+  res.send("Athan Clock Server is running");
+});
+
 app.get("/sync", (req, res) => {
   exec(`
     python3 -m venv venv && \
@@ -18,4 +26,8 @@ app.get("/sync", (req, res) => {
     console.log(`stdout: ${stdout}`);
     res.send("Sync complete.");
   });
+});
+
+app.listen(process.env.PORT || 3000, () => {
+  console.log("Server is running");
 });
