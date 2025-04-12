@@ -2,8 +2,8 @@ name: Daily Umm Al-Qura Sync
 
 on:
   schedule:
-    - cron: '0 23 * * *'  # Every day at 2:00 AST (UTC+3)
-  workflow_dispatch:
+    - cron: '0 22 * * *'  # Every day at 1:00 AM AST (10:00 PM UTC)
+  workflow_dispatch:       # Allow manual trigger
 
 jobs:
   run-sync:
@@ -19,10 +19,10 @@ jobs:
           python-version: 3.11
 
       - name: Install dependencies
-        run: pip install requests beautifulsoup4 PyGithub
+        run: pip install requests beautifulsoup4 selenium PyGithub
 
       - name: Run sync script
+        run: python sync.py
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           REPO_NAME: ${{ secrets.REPO_NAME }}
-        run: python sync.py
