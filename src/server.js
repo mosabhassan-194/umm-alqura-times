@@ -1,38 +1,34 @@
-const express = require("express");
 const { exec } = require("child_process");
-const fs = require("fs");
-const path = require("path");
+const express = require("express");
 const app = express();
-
-let prayerTimes = require("./jazan.json");
 
 app.get("/", (req, res) => {
   res.send("Athan Clock Server is running");
 });
 
-app.get("/jazantimes", (req, res) => {
-  res.json(prayerTimes);
-});
-
 app.get("/sync", (req, res) => {
-  exec("pip install -r requirements.txt && python3 src/sync.py", (err, stdout, stderr) => {
-    if (err) {
-      console.error("Sync failed:", stderr);
-      res.status(500).send("Sync failed:\n" + stderr);
-    } else {
-      console.log("Sync success:", stdout);
-      try {
-        const updated = JSON.parse(fs.readFileSync(path.join(__dirname, "jazan.json"), "utf8"));
-        prayerTimes = updated;
-      } catch (e) {
-        console.error("Failed to reload JSON:", e);
-      }
-      res.send("Sync complete:\n" + stdout);
+  exec(`
+    cd src && \
+    python3 -m venv venv && \
+    . venv/bin/activate && \
+    pip install --upgrade pip && \
+    pip install -r ../requirements.txt && \
+    python3 sync.py
+  `,
+  (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Sync failed: ${error.message}`);
+      res.send(`Sync failed: ${error.message}`);
+      return;
     }
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+    }
+    console.log(`stdout: ${stdout}`);
+    res.send("Sync complete.");
   });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log("Server is running...");
+app.listen(process.env.PORT || 3000, () => {
+  console.log("Server is running");
 });
