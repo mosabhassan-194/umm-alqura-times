@@ -1,3 +1,6 @@
+const { exec } = require("child_process");
+const express = require("express");
+const app = express(); // <== THIS LINE is missing in your code
 app.get("/sync", (req, res) => {
   exec(
     `
