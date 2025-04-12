@@ -1,11 +1,12 @@
 const express = require("express");
 const { exec } = require("child_process");
-const app = express();
 const fs = require("fs");
+const app = express();
+
 const prayerTimes = require("./jazan.json");
 
 app.get("/", (req, res) => {
-  res.send("Athan Clock Server is running!");
+  res.send("Athan Clock Server is running");
 });
 
 app.get("/jazantimes", (req, res) => {
@@ -13,18 +14,18 @@ app.get("/jazantimes", (req, res) => {
 });
 
 app.get("/sync", (req, res) => {
-  exec("python3 sync.py", (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error: ${stderr}`);
-      res.status(500).send(`Sync failed:\n${stderr}`);
+  exec("pip install -r requirements.txt && python3 src/sync.py", (err, stdout, stderr) => {
+    if (err) {
+      console.error("Sync failed:", stderr);
+      res.status(500).send("Sync failed:\n" + stderr);
     } else {
-      console.log(`Output: ${stdout}`);
-      res.send(`Sync complete:\n${stdout}`);
+      console.log("Sync success:", stdout);
+      res.send("Sync complete:\n" + stdout);
     }
   });
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log("Server is running on port", port);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log("Server is running...");
 });
